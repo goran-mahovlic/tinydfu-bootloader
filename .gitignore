@@ -4,3 +4,5 @@ pll.v
 *.rpt
 *.bin
 *.hex
+*.bit
+*.txt
