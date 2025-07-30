@@ -17,10 +17,10 @@ localparam SPI_SECURITY_REGISTERS = 3;
 localparam SPI_SECURITY_REG_SHIFT = 12;
 
 /* USB VID/PID Definitions */
-localparam BOARD_VID = 'h16d0;  /* MCS */
-localparam BOARD_PID = 'h116d;  /* Klinge DFU Bootloader */
+localparam BOARD_VID = 'h16d0;  /* IG */
+localparam BOARD_PID = 'h116d;  /* ULX5M-GS DFU Bootloader */
 
 /* String Descriptors */
-localparam BOARD_MFR_NAME = "Lone Dynamics Corporation";
+localparam BOARD_MFR_NAME = "Intergalaktik d.o.o.";
 localparam BOARD_PRODUCT_NAME = "ULX5M DFU Example";
 localparam BOARD_SERIAL = "000000";

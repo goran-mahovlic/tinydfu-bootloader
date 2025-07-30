@@ -1,5 +1,5 @@
 /*
- *  TinyDFU Bootloader for the Lone Dynamics Klinge computer.
+ *  TinyDFU Bootloader for the Intergalaktik ULX5M FPGA board.
  *  (based on the Logicbone ECP5 bootloader)
  */
 
@@ -24,7 +24,7 @@ wire clk270, clk180, clk90, clk_48mhz, usr_ref_out;
 wire usr_pll_lock_stdy, usr_pll_lock;
 
 CC_PLL #(
-    .REF_CLK(10.0),      // reference input in MHz
+    .REF_CLK(25.0),      // reference input in MHz
     .OUT_CLK(48.0),      // pll output frequency in MHz
     .LOW_JITTER(1),      // 0: disable, 1: enable low jitter mode
     .CI_FILTER_CONST(2), // optional CI filter constant
