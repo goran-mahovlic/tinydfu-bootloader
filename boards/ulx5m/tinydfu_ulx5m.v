@@ -10,8 +10,12 @@ module tinydfu_ulx5m (
     inout        usb_ufp_dp,
     inout        usb_ufp_dm,
     output       usb_ufp_pull,
+    input        usb_ufp_pull_n,
+    inout        usb_ufp_dp_diff,
+    inout        usb_ufp_dm_diff,
+    input        usb_id,
 
-    output       [3:0] led,
+    output       [6:0] led,
     output r,
 
     output       flash_csel,
@@ -39,6 +43,10 @@ CC_PLL #(
 reg  clk = 0;
 always @(posedge clk_48mhz) clk_24mhz <= ~clk_24mhz;
 always @(posedge clk_24mhz) clk <= ~clk;
+
+assign led[4] = usb_ufp_dp_diff;
+assign led[5] = usb_ufp_dn_diff;
+//assign led[6] = usb_ufp_pull_n;
 
 //////////////////////////
 // LED Patterns
