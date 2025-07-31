@@ -10,10 +10,10 @@ module tinydfu_ulx5m (
     inout        usb_ufp_dp,
     inout        usb_ufp_dm,
     output       usb_ufp_pull,
-    input        usb_ufp_pull_n,
+    output       usb_ufp_pull_n,
     inout        usb_ufp_dp_diff,
     inout        usb_ufp_dm_diff,
-    input        usb_id,
+    output       usb_id,
 
     output       [6:0] led,
     output r,
@@ -24,20 +24,31 @@ module tinydfu_ulx5m (
     input        flash_miso
 );
 
-wire clk270, clk180, clk90, clk_48mhz, usr_ref_out;
+
+wire clk270, clk180, clk90, clk0, usr_ref_out, clk_48mhz, locked, clock_out;
 wire usr_pll_lock_stdy, usr_pll_lock;
 
+wire pll_clk_nobuf;
 CC_PLL #(
-    .REF_CLK(25.0),      // reference input in MHz
-    .OUT_CLK(48.0),      // pll output frequency in MHz
+    .REF_CLK(`BOARD_FREQ_STR),    // reference input in MHz
+    .OUT_CLK("48.0"),    // pll output frequency in MHz
+    .PERF_MD("SPEED"), // LOWPOWER, ECONOMY, SPEED
     .LOW_JITTER(1),      // 0: disable, 1: enable low jitter mode
     .CI_FILTER_CONST(2), // optional CI filter constant
     .CP_FILTER_CONST(4)  // optional CP filter constant
-) pll_inst (
+) pll25 (
     .CLK_REF(refclk), .CLK_FEEDBACK(1'b0), .USR_CLK_REF(1'b0),
     .USR_LOCKED_STDY_RST(1'b0), .USR_PLL_LOCKED_STDY(usr_pll_lock_stdy), .USR_PLL_LOCKED(usr_pll_lock),
-    .CLK270(clk270), .CLK180(clk180), .CLK90(clk90), .CLK0(clk_48mhz), .CLK_REF_OUT(usr_ref_out)
+    .CLK270(clk270), .CLK180(clk180), .CLK90(clk90), .CLK0(pll_clk_nobuf), .CLK_REF_OUT(usr_ref_out)
 );
+CC_BUFG pll_bufg (.I(pll_clk_nobuf), .O(clk_48mhz));
+
+// reset is synced the clock
+reg locked_s1;
+always @(posedge clock_out) begin
+    locked_s1 <= usr_pll_lock;//_stdy;
+    locked <= locked_s1;
+end
 
 (* clkbuf_inhibit *) reg  clk_24mhz = 0;
 reg  clk = 0;
@@ -45,8 +56,8 @@ always @(posedge clk_48mhz) clk_24mhz <= ~clk_24mhz;
 always @(posedge clk_24mhz) clk <= ~clk;
 
 assign led[4] = usb_ufp_dp_diff;
-assign led[5] = usb_ufp_dn_diff;
-//assign led[6] = usb_ufp_pull_n;
+assign led[5] = usb_ufp_dm_diff;
+assign led[6] = usb_ufp_pull_n;
 
 //////////////////////////
 // LED Patterns
@@ -150,5 +161,6 @@ usb_phy_gatemate phy (
 
 // USB Host Detect Pull Up
 assign usb_ufp_pull = 1'b1;
+assign usb_id = 1'b1;
 
 endmodule

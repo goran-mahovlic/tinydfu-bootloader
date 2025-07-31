@@ -2,13 +2,15 @@
 ## Make and program ULX5M
 ##
 
-BASENAME = tinydfu
-TARGETNAME = $(BASENAME)_ulx5m
-PROJTOP = tinydfu_ulx5m
-
+TEST_CASE := tinydfu
+TOP := tinydfu_ulx5m
+YOSYS_PARAM := -nomx8 -nomult
+YOSYS_DEFS := -DDISP_640x480_60Hz=1
 RTL_USB_DIR = ../../usb
+BOOTADDR = 0x100000 # User image starts at 1MB
 
-SOURCES = \
+VERILOG_FILES := \
+	tinydfu_ulx5m.v \
 	$(RTL_USB_DIR)/edge_detect.v \
 	$(RTL_USB_DIR)/strobe.v \
 	$(RTL_USB_DIR)/usb_fs_in_arb.v \
@@ -27,33 +29,4 @@ SOURCES = \
 
 SRC = $(PROJTOP).v $(SOURCES)
 
-PIN_DEF = ulx5m.ccf
-
-BOOTADDR = 0x100000 # User image starts at 1MB
-
-all: $(PROJTOP).bit
-bootloader: $(PROJTOP).bit
-
-synth: $(PROJTOP).json
-
-$(PROJTOP).json: $(SRC)
-	yosys -q -p 'synth_gatemate -top $(PROJTOP) -nomx8 -nomult -luttree -json $@' $^
-
-$(PROJTOP).txt: $(PROJTOP).json $(PIN_DEF)
-	nextpnr-himbaechel --device CCGM1A1 --json $< --vopt ccf=$(PIN_DEF) --vopt out=$@ --router router2
-
-%.bit: %.txt
-	gmpack $< $@
-
-prog: $(PROJTOP).bit
-	openFPGALoader --index-chain 0 -b gatemate_evb_jtag $<
-
-prog_flash: $(PROJTOP).bit
-	openFPGALoader --index-chain 0 -b gatemate_evb_jtag -f $<
-
-dfu:
-	dfu-util -d 16d0:116d -a2 -D blink.bit
-
-clean:
-	rm -f $(PROJTOP).json $(PROJTOP).txt $(PROJTOP).bit
-
+include ../../../makefile.inc
