@@ -5,7 +5,6 @@
 TEST_CASE := tinydfu
 TOP := tinydfu_ulx5m
 YOSYS_PARAM := -nomx8 -nomult
-YOSYS_DEFS := -DDISP_640x480_60Hz=1
 RTL_USB_DIR = ../../usb
 BOOTADDR = 0x100000 # User image starts at 1MB
 

@@ -12,7 +12,7 @@ NET "resetn"        Loc="IO_EB_A3";
 
 NET "usb_ufp_dp"    	Loc="IO_EA_A0" | slew=fast | DRIVE=6;
 NET "usb_ufp_dm"    	Loc="IO_EA_B0" | slew=fast | DRIVE=6;
-NET "usb_ufp_pull"  	Loc="IO_EA_A2" | DRIVE=6;
+NET "usb_ufp_pull"  	Loc="IO_EA_A2" | DRIVE=3;
 NET "usb_ufp_pull_n"  	Loc="IO_EA_B2";
 NET "usb_ufp_dp_diff"   Loc="IO_EA_A1" | slew=fast | DRIVE=6;
 NET "usb_ufp_dm_diff"   Loc="IO_EA_B1" | slew=fast | DRIVE=6;
