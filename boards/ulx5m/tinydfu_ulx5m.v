@@ -8,8 +8,8 @@ module tinydfu_ulx5m (
     output       resetn,
 
     inout        usb_ufp_dp,
-    inout        usb_ufp_dm, 
-    output       usb_ufp_pull,
+    inout        usb_ufp_dn, 
+    output       usb_ufp_pull_p,
     output       usb_id,
 
     output       [3:0] led,
@@ -53,7 +53,7 @@ always @(posedge clk_48mhz) clk_24mhz <= ~clk_24mhz;
 always @(posedge clk_24mhz) clk <= ~clk;
 
 //assign led[4] = usb_ufp_dp_diff;
-//assign led[5] = usb_ufp_dm_diff;
+//assign led[5] = usb_ufp_dn_diff;
 //assign led[6] = usb_ufp_pull_n;
 
 //////////////////////////
@@ -147,7 +147,7 @@ usb_dfu_core dfu (
 // USB Physical interface
 usb_phy_gatemate phy (
   .pin_usb_p (usb_ufp_dp),
-  .pin_usb_n (usb_ufp_dm),
+  .pin_usb_n (usb_ufp_dn),
 
   .usb_p_tx( usb_p_tx ),
   .usb_n_tx( usb_n_tx ),
@@ -160,6 +160,6 @@ usb_phy_gatemate phy (
 //assign usb_ufp_pull = 1'b1;
 assign usb_id = 1'b1;
 //BB pin_usb_pull( .I( 1'b1 ), .T( reset_delay ), .O( ), .B( usb_ufp_pull ) );
-CC_TOBUF pin_usb_pull (.A(1'b1), .T( reset_delay ), .O(usb_ufp_pull));
+CC_TOBUF pin_usb_pull (.A(1'b1), .T( reset_delay ), .O(usb_ufp_pull_p));
 
 endmodule
